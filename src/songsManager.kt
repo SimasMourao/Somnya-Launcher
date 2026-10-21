@@ -1,3 +1,5 @@
+import java.io.File
+
 fun showSongs(){
     //print("\u001b[H\u001b[2J")
     if(dataBaseSongs.isNotEmpty()){
@@ -30,15 +32,17 @@ fun songsManager(){
         ${"_".repeat(50)}
                     Songs Manager:
         
-            1 - Play Song
+            1 - Search Songs
             
-            2 - Add Song to Playlist 
+            2 - Play Songs
             
-            3 - Add Song
+            3 - Add Song to Playlist 
             
-            4 - Delete Song
+            4 - Add Song
             
-            5 - Exit
+            5 - Delete Song
+            
+            6 - Exit
                 
         ${"_".repeat(50)}
         """.trimIndent())
@@ -46,26 +50,30 @@ fun songsManager(){
 
         when(option){
             "1"->{
-                showSongs()
-                while(true){
-                    print("\u001b[H\u001b[2J")
-                    println("\nCHOSEN A MUSIC: ")
-                    val musicChosen = readln().toInt() - 1
-                    if(musicChosen >= 0 && musicChosen < dataBaseSongs.size){
-                        val durationMusicChosen =
-                            "${dataBaseSongs[musicChosen].duration.minutes}:${dataBaseSongs[musicChosen].duration.seconds}"
-                        println("""
-                            
-                        ▶   ${dataBaseSongs[musicChosen].name}            ${durationMusicChosen}
-                            ${dataBaseSongs[musicChosen].album}    
-                        """.trimIndent())
-                        break
-                    }
-                    else println("\ninvalid option!".uppercase())
+
+                /*println("insert one folder: ")
+                val path = readln()*/
+                val path = "C:\\Users\\Simas\\OneDrive\\Music\\SomnyaMusicasLocais"
+                val folder = File(path)
+
+                if(folder.exists() && folder.isDirectory){
+                    val song = folder.walkTopDown()
+                        .filter { it.isFile && it.extension.lowercase() == "mp3"}.toList()
+
+                    println("${song.size} songs found!")
+
+                    song.forEach { println(it.absoluteFile) }
+                }
+                else{
+                    println("Invalid folder")
                 }
             }
 
             "2"->{
+                println("▶ Play!")
+            }
+
+            "3"->{
                 //print("\u001b[H\u001b[2J")
                 do {
                     var music: Song? = null
@@ -89,15 +97,15 @@ fun songsManager(){
                                 println("Chosen a playlist: ")
                                 val playlistChosen = readln().toIntOrNull()?.let { it - 1 }
 
-                                if (playlistChosen != null && playlistChosen >= 0 && playlistChosen < dataBaseSongs.size) {
+                                if (playlistChosen != null && playlistChosen >= 0 && playlistChosen < dataBasePlaylists.size) {
                                     playlist = dataBasePlaylists[playlistChosen]
                                     playlist.songs.add(music)
                                     println("\n${music.name} HAS BEEN ADDED TO ${playlist.playlistName}!\n")
                                 }
                                 else{
-                                    println("\nEMPTY INPUT!\n")
+                                    println("\nEMPTY OR INVALID INPUT!\n")
                                 }
-                            }while (playlistChosen == null)
+                            }while (playlistChosen == null || playlistChosen < 0 || playlistChosen >= dataBasePlaylists.size)
                         }
                     }
                     else{
@@ -107,7 +115,7 @@ fun songsManager(){
                 }while (musicChosen == null)
             }
 
-            "3"->{
+            "4"->{
                 print("\u001b[H\u001b[2J")
 
                 println("\nSTATE THE NAME OF THE SONG: ")
@@ -125,11 +133,11 @@ fun songsManager(){
                 println("\nSTATE THE SECONDS OF THE SONG: ")
                 val secondNewSong = readln().toInt()
 
-                val newSong = Song(nameNewSong, singerNewSong, Duration(minuteNewSong, secondNewSong),albumNewSong)
+                val newSong = Song(nameNewSong, singerNewSong, Duration(minuteNewSong, secondNewSong),albumNewSong, "local")
                 dataBaseSongs.add(newSong)
             }
 
-            "4"->{
+            "5"->{
                 print("\u001b[H\u001b[2J")
                 showSongs()
                 if(dataBaseSongs.isNotEmpty()) {
@@ -153,7 +161,7 @@ fun songsManager(){
                 }
             }
 
-            "5"->{
+            "6"->{
                 print("\u001b[H\u001b[2J")
                 break;
             }

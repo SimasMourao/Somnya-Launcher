@@ -88,12 +88,16 @@ fun playlistsManager(){
                 if(dataBasePlaylists.isNotEmpty()){
                     showPlaylist()
 
-                    println("\nSelect playlist: \n")
-
-                    val playingPlaylist = readln().toInt() - 1
-                    playPlaylist(playingPlaylist)
-
-
+                    do {
+                        println("\nSelect playlist: \n")
+                        val playingPlaylist = readln().toInt() - 1
+                        if (playingPlaylist >= 0 && playingPlaylist < dataBasePlaylists.size) {
+                            playPlaylist(playingPlaylist)
+                        }
+                        else{
+                            println("INVALID INPUT!\n")
+                        }
+                    }while (playingPlaylist < 0 || playingPlaylist >= dataBasePlaylists.size)
                 }
                 else{
                     println("\nNo playlists!\n")

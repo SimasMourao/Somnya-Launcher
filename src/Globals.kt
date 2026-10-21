@@ -13,7 +13,8 @@ class Song(
     val name: String,
     val singer: String,
     val duration: Duration,
-    val album: String = "Unknown"
+    val album: String = "Unknown",
+    val filePath: String
 )
 
 val dataBaseSongs = mutableListOf<Song>()
